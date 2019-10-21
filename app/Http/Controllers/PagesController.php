@@ -15,7 +15,9 @@ class PagesController extends Controller {
   }
 
   public function cancel() {
-    return view('pages.cancel');
+    return view('pages.cancel')->with([
+      'page' => 'cancel',
+    ]);
   }
 
   public function success(Request $request) {
