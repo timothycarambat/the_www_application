@@ -1,0 +1,15 @@
+.input-container {
+  background: #FFF;
+  position: fixed;
+  top: 0;
+  margin-left: 2%;
+  padding: 7px;
+}
+.input-container > * {
+  display: inherit;
+}
+html, body, #mapid {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}

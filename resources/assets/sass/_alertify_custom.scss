@@ -1,0 +1,138 @@
+.alertify-notifier {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  width: 6.5%;
+  height: 14%;
+
+  .ajs-message.ajs-error {
+    box-shadow: 5px 5px 25px black;
+    width: 370%;
+  }
+}
+
+.ajs-header {
+  background-color: #55a2ff !important;
+  font-size: 25px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.ajs-content {
+  font-size: 20px;
+
+  p.small {
+    font-size: 12px;
+  }
+}
+
+/* enable absolute positioning */
+.inner-addon {
+    position: relative;
+
+    input {
+      line-height: 20px;
+      font-size: 20px;
+    }
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 1.5%;
+  pointer-events: none;
+
+  &.glyphicon-remove-sign {
+    color: #dc5555;
+  }
+  &.glyphicon-refresh {
+    color: #55a2ff;
+  }
+  &.glyphicon-ok-sign {
+    color: green;
+  }
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+.glyphicon.fast-right-spinner {
+    -webkit-animation: glyphicon-spin-r 1s infinite linear;
+    animation: glyphicon-spin-r 1s infinite linear;
+}
+
+@-webkit-keyframes glyphicon-spin-r {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+@keyframes glyphicon-spin-r {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+.ajs-ok:disabled {
+  cursor: not-allowed;
+}
+
+.test-btn {
+  margin-top: 2%;
+}
+
+.ajs-cancel:empty {
+  display: none;
+}
+
+.ajs-button {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &.ajs-ok {
+    color: #fff;
+    background-color: #2ab27b;
+    border-color: #259d6d;
+  }
+
+  &.ajs-cancel {
+    color: #636b6f;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+}
