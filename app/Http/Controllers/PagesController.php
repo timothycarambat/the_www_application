@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Purchase;
 use App\GeoJson;
+use App\Coupon;
 
 class PagesController extends Controller {
 
   public function home() {
     return view('pages.map')->with([
       'page' => 'map',
+      'coupons_enabled' => Coupon::where('active', true)->count() > 0,
     ]);
   }
 

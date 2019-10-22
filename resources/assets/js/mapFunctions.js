@@ -1,29 +1,5 @@
 import {checkoutZone} from './checkout'
 
-function makeURL(url) {
-  const proxy = "https://cors-anywhere.herokuapp.com/"
-
-  return `${proxy}${url}`
-}
-
-function resolveLocation(ipv4) {
-  // Please note, the use of this service requires a link back in your web project: [IP Location Finder by KeyCDN](https://tools.keycdn.com/geo)
-  fetch(makeURL(`https://tools.keycdn.com/geo.json?host=${ipv4}`))
-    .then((response) => response.json())
-    .then((result) => {
-      window.LatLng ={
-        latitude: result.data.geo.latitude,
-        longitude: result.data.geo.longitude,
-      }
-    })
-    .then(() => {
-      centerMap()
-      setGeoJsonLayer()
-      enableDrawingTools()
-      enableLocationSearch()
-    })
-}
-
 function setMapPanRestriction() {
   var southWest = L.latLng(-89.98155760646617, -180),
   northEast = L.latLng(89.99346179538875, 180);
@@ -35,21 +11,7 @@ function setMapPanRestriction() {
 }
 
 // Set Location Marker, Center Map, and Hide/unassign loader.
-function centerMap() {
-  const {latitude, longitude} = window.LatLng
-
-  let userLoc = L.circleMarker([latitude, longitude],{
-    fillColor: '#ffad14',
-    color: '#c98b16',
-    fillOpacity: 0.8
-  }).addTo(map)
-
-  userLoc.bindPopup("You, probably");
-  userLoc.on('click', function (e) {
-      this.openPopup();
-  });
-
-  map.panTo(new L.LatLng(latitude, longitude));
+window.removeLoader = () => {
   window.leafletLoader.hide()
   window.leafletLoader = undefined
 }
@@ -137,7 +99,12 @@ function enableDrawingTools() {
   	 })
   	 polyCoords.push(polyCoords[0])
      newTurfPolygon = turf.polygon([polyCoords])
-     invalidShape = turf.booleanContains(newTurfPolygon, geoJSONObjects[0]) || turf.booleanOverlap(newTurfPolygon, geoJSONObjects[0])
+
+     if (geoJSONObjects.length > 0) {
+       for (i=0; i < geoJSONObjects.length; i++) {
+         invalidShape = turf.booleanContains(newTurfPolygon, geoJSONObjects[i]) || turf.booleanOverlap(newTurfPolygon, geoJSONObjects[i])
+       }
+     }
 
      if (invalidShape){
        handleInvalidShape()
@@ -156,32 +123,6 @@ function enableLocationSearch() {
   searchControl.on('results', function(data){
     map.panTo(data.results[0].latlng);
   });
-}
-
-// if we are live just get the client IP from laravel Request::ip()
-// This will save us time on the proxy request to jsonip
-function getLocationAndCenter() {
-  // If geolocator takes too long just show the map anyway centered on LA, CA
-  setTimeout(() => {
-    if (!window.LatLng) {
-      window.LatLng ={
-        latitude: 34.052235,
-        longitude: -118.243683,
-      }
-      centerMap()
-      setGeoJsonLayer()
-      enableDrawingTools()
-      enableLocationSearch()
-    }
-  }, 2500)
-
-  if (window.env === 'production') {
-    resolveLocation(window.ipv4)
-  } else{
-    fetch(makeURL("http://jsonip.com?"))
-      .then((response) => response.json())
-      .then((result) => resolveLocation(result.ip.split(',')[0]))
-  }
 }
 
 window.formatAmount = (value, isCurrency = false) => {
@@ -347,7 +288,7 @@ export function makeBaseMap() {
 
   // Init Map Object
   window.map = L.map('mapid', {
-    center: [0, 0],
+    center: [34.052235, -118.243683],
     zoom: 10,
 	  minZoom: window.zoomLimit,
   });
@@ -362,12 +303,14 @@ export function makeBaseMap() {
   }).addTo(map);
 
   window.leafletLoader = L.control.loader().addTo(map);
-  getLocationAndCenter()
+  setGeoJsonLayer()
+  enableDrawingTools()
+  enableLocationSearch()
 
   /////TEST///
   // window.LatLng = {latitude:30.009284, longitude: -90.143888}
   // window.zoneArea = 5000.00
-  // centerMap()
+  // removeLoader()
   // setGeoJsonLayer()
   // enableDrawingTools()
   // enableLocationSearch()

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp;
 
 use App\Purchase;
+use App\Coupon;
 
 class MainController extends Controller
 {
@@ -76,10 +77,10 @@ class MainController extends Controller
 
     public static function getCouponDetails($couponId) {
       $couponId = empty($couponId) ? '' : $couponId;
-      $valid_coupons = json_decode($_ENV['WWW_COUPONS']);
-      $valid_coupon = property_exists($valid_coupons, $couponId);
-      $discount = $valid_coupon ? $valid_coupons->{$couponId} : 0.00;
-
+      $coupon = Coupon::where('code', $couponId)->first();
+      $valid_coupon = !is_null($coupon);
+      $discount = is_null($coupon) ? 0.00 : $coupon->discount;
+      
       return [
         'validCoupon' => $valid_coupon,
         'discount' => $discount,

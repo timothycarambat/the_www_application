@@ -15,8 +15,8 @@ function showIntro() {
                   <br><br>
                   If you have any issues you or comments email us at <a href='mailto:${window.supportEmail}'>${window.supportEmail}</a>
                 `
-                , function(){ }
-                , function(){ })
+                , function(){ removeLoader()}
+                , function(){ removeLoader()})
                 .set({
                   'labels': {ok: 'Start Exploring!', cancel: ''},
                 });

@@ -25,14 +25,13 @@
       // Set Globals Here
       window.env = "{{$_ENV['APP_ENV']}}"
       window.page = "{{$page}}"
-      window.ipv4 = "{{Request::ip()}}"
       window.zoomLimit = "{{$_ENV['ZOOM_LIMIT']}}"
       window.geojsontileserver = "{{$_ENV['GEOJSON_TILE_SERVER']}}"
       window.geojsontilename = "{{$_ENV['GEOJSON_FILE_NAME']}}"
       window.unitCost = "{{$_ENV['UNIT_COST_USD']}}"
       window.perUnitSqKm = "{{$_ENV['PER_UNIT_SQKM']}}"
       window.stripe = Stripe("{{$_ENV['STRIPE_PUB_KEY']}}")
-      window.couponEnabled = "{{getenv('WWW_COUPONS')}}" !== ''
+      window.couponEnabled = "{{$coupons_enabled}}"
       window.supportEmail = "{{$_ENV['SUPPORT_EMAIL']}}"
     </script>
     <script src="{{ asset('js/app.js') }}"></script>
