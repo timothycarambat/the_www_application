@@ -256,10 +256,6 @@ window.applyCoupon = () => {
     return false
   }
 
-  else if (window.zoneArea * (window.unitCost / window.perUnitSqKm) > 5.00) {
-
-  }
-
   $('.coupon.glyphicon')
     .removeClass('glyphicon-remove-sign glyphicon-ok-sign glyphicon-refresh fast-right-spinner')
     .addClass('glyphicon-refresh fast-right-spinner')
@@ -277,13 +273,13 @@ window.applyCoupon = () => {
         let newTotal = currentTotal - (currentTotal * result.discount)
 
         // prevent giving away too much area for nothing.
-        if (newTotal == 0.00 && currentTotal > 5.00) {
+        if (newTotal == 0.00 && currentTotal > 10.00) {
           $('.coupon.glyphicon, .coupon.glyphicon-ok-sign')
             .removeClass('glyphicon-remove-sign glyphicon-ok-sign glyphicon-refresh fast-right-spinner')
           $('#couponTotal').addClass('hidden')
           $('#couponId').val('')
           window.couponId = null
-          alertify.error('You cannot use this coupon for a value more than $5.00')
+          alertify.error('You cannot use this coupon for a value more than $10.00')
           return false
         }
 
