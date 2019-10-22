@@ -15,6 +15,19 @@
   width: 700px;
   font-size: 15px;
 }
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .modal-body > p > a.btn {
+    margin-left: -13%;
+  }
+  .modal-content {
+    width: 50%;
+  }
+  body {
+    overflow: scroll !important;
+  }
+}
+
 .modal-newsletter .modal-content {
   padding: 40px 50px;
   border-radius: 1px;

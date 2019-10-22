@@ -1,4 +1,5 @@
 import {checkoutZone} from './checkout'
+import {supportButton} from './supportControl'
 
 function setMapPanRestriction() {
   var southWest = L.latLng(-89.98155760646617, -180),
@@ -43,8 +44,13 @@ function setGeoJsonLayer() {
             onEachFeature: function (feature, layer) {
               feature.geometry.geometries && geoJSONObjects.push( turf.buffer(feature.geometry.geometries[0], 5) )
                 if (feature.properties) {
-                		layer.on('click', (e) => {
-  										window.open(e.target.feature.properties.redirect)
+                		layer.on('click', (elayer) => {
+                      alertify.confirm('Confirm Open', `This will open a new window to: <br> ${elayer.target.feature.properties.redirect}`
+                      , function(){ window.open(elayer.target.feature.properties.redirect) }
+                      , function(){ alertify.message('You declined to open the window.') })
+                      .set({
+                        'labels': {ok: 'Open Link', cancel:''}
+                      })
   									})
                 }
             }
@@ -250,6 +256,10 @@ window.applyCoupon = () => {
     return false
   }
 
+  else if (window.zoneArea * (window.unitCost / window.perUnitSqKm) > 5.00) {
+
+  }
+
   $('.coupon.glyphicon')
     .removeClass('glyphicon-remove-sign glyphicon-ok-sign glyphicon-refresh fast-right-spinner')
     .addClass('glyphicon-refresh fast-right-spinner')
@@ -263,7 +273,20 @@ window.applyCoupon = () => {
           .addClass('glyphicon-ok-sign')
         let currentTotal = window.zoneArea * (window.unitCost / window.perUnitSqKm)
         currentTotal = currentTotal < 1.00 ? 1.00 : currentTotal
+
         let newTotal = currentTotal - (currentTotal * result.discount)
+
+        // prevent giving away too much area for nothing.
+        if (newTotal == 0.00 && currentTotal > 5.00) {
+          $('.coupon.glyphicon, .coupon.glyphicon-ok-sign')
+            .removeClass('glyphicon-remove-sign glyphicon-ok-sign glyphicon-refresh fast-right-spinner')
+          $('#couponTotal').addClass('hidden')
+          $('#couponId').val('')
+          window.couponId = null
+          alertify.error('You cannot use this coupon for a value more than $5.00')
+          return false
+        }
+
         let displayTotal = formatAmount(newTotal, true)
         $('#couponTotal, #couponTotal > b')
           .removeClass('hidden')
@@ -303,6 +326,8 @@ export function makeBaseMap() {
   }).addTo(map);
 
   window.leafletLoader = L.control.loader().addTo(map);
+  map.addControl(new supportButton());
+
   setGeoJsonLayer()
   enableDrawingTools()
   enableLocationSearch()

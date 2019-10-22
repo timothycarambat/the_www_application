@@ -43,8 +43,8 @@ class MainController extends Controller
     // validate coupon code + get discount && and check new (possibly) discounted amount
     // that the value is greater than 0.10
     public static function create_checkout_session(Request $request) {
-      $total_cost_usd = $request->area * ($_ENV['UNIT_COST_USD'] / $_ENV['PER_UNIT_SQKM']);
-      $total_cost_usd = $total_cost_usd < 1.00 ? 1.00 : round($total_cost_usd, 2);
+      $original_total_cost_usd = $request->area * ($_ENV['UNIT_COST_USD'] / $_ENV['PER_UNIT_SQKM']);
+      $total_cost_usd = $original_total_cost_usd < 1.00 ? 1.00 : round($original_total_cost_usd, 2);
       $coupon = MainController::getCouponDetails($request->couponId);
 
       if ($coupon['validCoupon']) {
@@ -53,7 +53,11 @@ class MainController extends Controller
 
       // this means the zone costs nothing so we need to just save and implment into geojson.
       if ($total_cost_usd == 0.00) {
-        $session_id = Purchase::create_purchase_record($total_cost_usd, 'internal', $request);
+        if ($original_total_cost_usd > 10.00) {
+          $session_id = 'cancelled_for_coupon_invalid_req';
+        } else {
+          $session_id = Purchase::create_purchase_record($total_cost_usd, 'internal', $request);
+        }
         $is_stripe = false;
         $redirectTo = $_ENV['APP_URL']."/success?session_id=".$session_id;
       } else {
@@ -80,7 +84,7 @@ class MainController extends Controller
       $coupon = Coupon::where('code', $couponId)->first();
       $valid_coupon = !is_null($coupon);
       $discount = is_null($coupon) ? 0.00 : $coupon->discount;
-      
+
       return [
         'validCoupon' => $valid_coupon,
         'discount' => $discount,

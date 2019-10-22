@@ -15,7 +15,7 @@
           <img class='end-logo' src='/images/logo.svg'/>
         </div>
 
-        <div id="myModal" class="end-modal fade in" style="display:block">
+        <div id="myModal" class="col-xs-12 end-modal fade in" style="display:block">
         	<div class="modal-dialog modal-newsletter">
         		<div class="modal-content">
         				<div class="modal-header">

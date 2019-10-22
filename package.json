@@ -15,8 +15,7 @@
         "cross-env": "^5.1",
         "jquery": "^3.2",
         "laravel-mix": "^1.0",
-        "lodash": "^4.17.4",
-        "vue": "^2.5.7"
+        "lodash": "^4.17.4"
     },
     "dependencies": {
         "@turf/turf": "^5.1.6",
@@ -25,6 +24,6 @@
         "leaflet-control-geocoder": "^1.10.0",
         "leaflet-draw": "^1.0.4",
         "leaflet-minimap": "^3.6.1",
-        "vivus": "^0.4.5"
+        "obfuscator": "^0.5.4"
     }
 }
