@@ -25,24 +25,19 @@ function setGeoJsonLayer() {
 
   var style = {
         "clickable": true,
-        "color": "#00D",
-        "fillColor": "#00D",
-        "weight": 1.0,
-        "opacity": 0.3,
-        "fillOpacity": 0.2
-    };
-    var hoverStyle = {
-        "fillOpacity": 0.5
+        "color": "#35f2e9",
+        "fillColor": "#35f2e9",
     };
 
     geojsonTileLayer = new L.TileLayer.GeoJSON(`${geojsontileserver}/${geojsontilename}/{z}/{x}/{y}.geojson`, {
             clipTiles: true,
             unique: function (feature) {
                 return feature.id;
-            }
+            },
         }, {
+            style: style,
             onEachFeature: function (feature, layer) {
-              feature.geometry.geometries && geoJSONObjects.push( turf.buffer(feature.geometry.geometries[0], 5) )
+              feature.geometry.geometries && geoJSONObjects.push( turf.buffer(feature.geometry.geometries[0], 0.01) )
                 if (feature.properties) {
                 		layer.on('click', (elayer) => {
                       // The fire event fires more than once a lot of the times there are more then one shape on the map
@@ -113,7 +108,7 @@ function enableDrawingTools() {
 
      if (geoJSONObjects.length > 0) {
        for (i=0; i < geoJSONObjects.length; i++) {
-         invalidShape = turf.booleanContains(newTurfPolygon, geoJSONObjects[i]) || turf.booleanOverlap(newTurfPolygon, geoJSONObjects[i])
+         invalidShape = turf.intersect(newTurfPolygon, geoJSONObjects[i]) || turf.booleanContains(newTurfPolygon, geoJSONObjects[i]) || turf.booleanOverlap(newTurfPolygon, geoJSONObjects[i])
        }
      }
 
@@ -321,10 +316,8 @@ export function makeBaseMap() {
   setMapPanRestriction()
 
   // Show Base layer
-  let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    noWrap: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+  L.esri.basemapLayer('Imagery').addTo(map)
+  L.esri.basemapLayer('ImageryLabels').addTo(map)
 
   window.leafletLoader = L.control.loader().addTo(map);
   map.addControl(new supportButton());
