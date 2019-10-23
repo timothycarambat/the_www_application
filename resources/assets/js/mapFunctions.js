@@ -45,12 +45,17 @@ function setGeoJsonLayer() {
               feature.geometry.geometries && geoJSONObjects.push( turf.buffer(feature.geometry.geometries[0], 5) )
                 if (feature.properties) {
                 		layer.on('click', (elayer) => {
-                      alertify.confirm('Confirm Open', `This will open a new window to: <br> ${elayer.target.feature.properties.redirect}`
-                      , function(){ window.open(elayer.target.feature.properties.redirect) }
-                      , function(){ alertify.message('You declined to open the window.') })
-                      .set({
-                        'labels': {ok: 'Open Link', cancel:''}
-                      })
+                      // The fire event fires more than once a lot of the times there are more then one shape on the map
+                      // so we need to prevent the modal from being overwritten so the user gets the correct url!
+                      if (!window.isOpen) {
+                        window.isOpen = true
+                        alertify.confirm('Confirm Open', `This will open a new window to: <br> ${elayer.target.feature.properties.redirect}`
+                        , function(){ window.isOpen = false; window.open(elayer.target.feature.properties.redirect) }
+                        , function(){ window.isOpen = false; alertify.message('You declined to open the window.') })
+                        .set({
+                          'labels': {ok: 'Open Link', cancel:'Close'}
+                        })
+                      }
   									})
                 }
             }
