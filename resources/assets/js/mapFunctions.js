@@ -37,7 +37,13 @@ function setGeoJsonLayer() {
         }, {
             style: style,
             onEachFeature: function (feature, layer) {
-              feature.geometry.geometries && geoJSONObjects.push( turf.buffer(feature.geometry.geometries[0], 0.01) )
+                // The first feature always comes in as a collection so it needs to be handled differently to be able
+                // to use it as a valid turf object for later.
+                if (feature.geometry.geometries) {
+                  geoJSONObjects.push( turf.polygon(feature.geometry.geometries[0].coordinates, feature.properties) )
+                } else {
+                  geoJSONObjects.push( turf.polygon(feature.geometry.coordinates, feature.properties) )
+                }
                 if (feature.properties) {
                 		layer.on('click', (elayer) => {
                       // The fire event fires more than once a lot of the times there are more then one shape on the map
@@ -109,6 +115,12 @@ function enableDrawingTools() {
      if (geoJSONObjects.length > 0) {
        for (i=0; i < geoJSONObjects.length; i++) {
          invalidShape = turf.intersect(newTurfPolygon, geoJSONObjects[i]) || turf.booleanContains(newTurfPolygon, geoJSONObjects[i]) || turf.booleanOverlap(newTurfPolygon, geoJSONObjects[i])
+
+         // if shape does not pass intersection, contains or overlap conditons then
+         // we should reset the users input
+         if (invalidShape) {
+           break;
+         }
        }
      }
 
